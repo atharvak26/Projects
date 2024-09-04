@@ -1,0 +1,75 @@
+use college;
+-- Create Students table
+CREATE TABLE Students (
+    student_id INT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    date_of_birth DATE,
+    gender VARCHAR(10),
+    address VARCHAR(100),
+    phone_number VARCHAR(15),
+    email VARCHAR(100),
+    enrollment_date DATE
+);
+
+-- Create Payments table
+CREATE TABLE Payments (
+    payment_id INT PRIMARY KEY,
+    student_id INT,
+    payment_date DATE,
+    amount DECIMAL(10, 2),
+    payment_method VARCHAR(50)
+);
+
+-- Insert sample data into Students table
+INSERT INTO Students (student_id, first_name, last_name, date_of_birth, gender, address, phone_number, email, enrollment_date)
+VALUES
+    (1, 'John', 'Doe', '2000-01-01', 'Male', '123 Main St, City', '1234567890', 'john.doe@email.com', '2022-08-15'),
+    (2, 'Jane', 'Smith', '2001-02-15', 'Female', '456 Elm St, Town', '9876543210', 'jane.smith@email.com', '2022-08-15');
+
+-- Insert sample data into Payments table
+INSERT INTO Payments (payment_id, student_id, payment_date, amount, payment_method)
+VALUES
+    (1, 1, '2023-01-10', 500.00, 'Credit Card'),
+    (2, 2, '2023-02-05', 400.00, 'Cash'),
+    (3, 1, '2023-02-20', 300.00, 'Cheque'),
+    (4, 1, '2023-03-15', 250.00, 'Cash'),
+    (5, 2, '2023-04-01', 350.00, 'Credit Card');
+
+-- Query 1: Total fee paid by each student
+SELECT
+    s.student_id,
+    s.first_name,
+    s.last_name,
+    SUM(p.amount) AS total_fee_paid
+FROM
+    Students s
+    INNER JOIN Payments p ON s.student_id = p.student_id
+GROUP BY
+    s.student_id,
+    s.first_name,
+    s.last_name;
+
+-- Query 2: Total fee collected by payment method
+SELECT
+    payment_method,
+    SUM(amount) AS total_fee_collected
+FROM
+    Payments
+GROUP BY
+    payment_method;
+
+-- Query 3: Fee payment details for a specific student
+SELECT
+    s.student_id,
+    s.first_name,
+    s.last_name,
+    p.payment_id,
+    p.payment_date,
+    p.amount,
+    p.payment_method
+FROM
+    Students s
+    INNER JOIN Payments p ON s.student_id = p.student_id
+WHERE
+    s.student_id = 1;
